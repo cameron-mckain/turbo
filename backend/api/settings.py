@@ -92,6 +92,33 @@ DATABASES = {
 }
 
 ######################################################################
+# Cache
+######################################################################
+REDIS_HOST = environ.get("REDIS_HOST", "localhost")
+REDIS_PORT = environ.get("REDIS_PORT", "6379")
+REDIS_DB = environ.get("REDIS_DB", "0")
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "KEY_PREFIX": "turbo",
+            "SOCKET_CONNECT_TIMEOUT": 5,
+            "SOCKET_TIMEOUT": 5,
+        },
+        "TIMEOUT": 300,  # Default cache timeout: 5 minutes
+    }
+}
+
+######################################################################
+# Sessions
+######################################################################
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
+
+######################################################################
 # Authentication
 ######################################################################
 AUTH_USER_MODEL = "api.User"
