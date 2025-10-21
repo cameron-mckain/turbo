@@ -3,16 +3,6 @@ import type { AuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { getApiClient } from './api'
 
-// Request payload types (exclude readonly response fields)
-type TokenCreateRequest = {
-  username: string
-  password: string
-}
-
-type TokenRefreshRequest = {
-  refresh: string
-}
-
 function decodeToken(token: string): {
   token_type: string
   exp: number
@@ -59,9 +49,10 @@ const authOptions: AuthOptions = {
       // Refresh token
       if (Date.now() / 1000 > decodeToken(token.access).exp) {
         const apiClient = await getApiClient()
+        // @ts-expect-error - API type includes readonly response fields
         const res = await apiClient.token.tokenRefreshCreate({
           refresh: token.refresh
-        } as TokenRefreshRequest)
+        })
 
         token.access = res.access
       }
@@ -86,10 +77,11 @@ const authOptions: AuthOptions = {
 
         try {
           const apiClient = await getApiClient()
+          // @ts-expect-error - API type includes readonly response fields
           const res = await apiClient.token.tokenCreate({
             username: credentials.username,
             password: credentials.password
-          } as TokenCreateRequest)
+          })
 
           return {
             id: decodeToken(res.access).user_id,
