@@ -14,7 +14,7 @@ SECRET_KEY = environ.get("SECRET_KEY", get_random_secret_key())
 
 DEBUG = environ.get("DEBUG", "") == "1"
 
-ALLOWED_HOSTS = ["localhost", "api"]
+ALLOWED_HOSTS = environ.get("ALLOWED_HOSTS", "localhost,api,turbo-backend-svc,turbo.k8.mckain.dev").split(",")
 
 WSGI_APPLICATION = "api.wsgi.application"
 
@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "corsheaders",
     "rest_framework",
     "rest_framework_simplejwt",
     "drf_spectacular",
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
 ######################################################################
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -122,7 +124,8 @@ USE_TZ = True
 ######################################################################
 # Staticfiles
 ######################################################################
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+STATIC_ROOT = "/app/staticfiles/"
 
 ######################################################################
 # Rest Framework
@@ -169,3 +172,18 @@ UNFOLD = {
         ],
     },
 }
+
+######################################################################
+# CORS
+######################################################################
+CORS_ALLOWED_ORIGINS = [
+    "https://turbo.k8.mckain.dev",
+]
+CORS_ALLOW_CREDENTIALS = True
+
+######################################################################
+# CSRF
+######################################################################
+CSRF_TRUSTED_ORIGINS = [
+    "https://turbo.k8.mckain.dev",
+]
