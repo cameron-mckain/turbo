@@ -3,6 +3,16 @@ import type { AuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { getApiClient } from './api'
 
+// Request payload types (exclude readonly response fields)
+type TokenCreateRequest = {
+  username: string
+  password: string
+}
+
+type TokenRefreshRequest = {
+  refresh: string
+}
+
 function decodeToken(token: string): {
   token_type: string
   exp: number
@@ -51,7 +61,7 @@ const authOptions: AuthOptions = {
         const apiClient = await getApiClient()
         const res = await apiClient.token.tokenRefreshCreate({
           refresh: token.refresh
-        } as any)
+        } as TokenRefreshRequest)
 
         token.access = res.access
       }
@@ -79,7 +89,7 @@ const authOptions: AuthOptions = {
           const res = await apiClient.token.tokenCreate({
             username: credentials.username,
             password: credentials.password
-          } as any)
+          } as TokenCreateRequest)
 
           return {
             id: decodeToken(res.access).user_id,
