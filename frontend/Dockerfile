@@ -11,7 +11,7 @@ COPY packages ./packages
 COPY apps/web ./apps/web
 
 # Install dependencies
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --no-frozen-lockfile
 
 # Build stage
 FROM base AS builder

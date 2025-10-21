@@ -17,20 +17,10 @@ RUN python3.14t -m pip install uv && \
 # Copy application code
 COPY api ./api
 COPY manage.py ./
+COPY start.sh ./
 
 # Create staticfiles directory
-RUN mkdir -p /app/staticfiles
-
-# Create startup script
-RUN echo '#!/bin/bash\n\
-set -e\n\
-echo "Running migrations..."\n\
-python3.14t manage.py migrate --noinput\n\
-echo "Collecting static files..."\n\
-python3.14t manage.py collectstatic --noinput\n\
-echo "Starting Granian..."\n\
-python3.14t -m granian --interface wsgi api.wsgi:application --host 0.0.0.0 --port 8000 --workers 4\n\
-' > /app/start.sh && chmod +x /app/start.sh
+RUN mkdir -p /app/staticfiles && chmod +x /app/start.sh
 
 EXPOSE 8000
 
