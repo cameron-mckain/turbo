@@ -70,17 +70,24 @@ const authOptions: AuthOptions = {
         password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
+        console.log('[NextAuth] authorize called with credentials:', { username: credentials?.username })
+
         if (credentials === undefined) {
+          console.log('[NextAuth] credentials undefined, returning null')
           return null
         }
 
         try {
+          console.log('[NextAuth] Creating API client with BASE:', process.env.API_URL)
           const apiClient = await getApiClient()
+
+          console.log('[NextAuth] Calling tokenCreate with username:', credentials.username)
           const res = await apiClient.token.tokenCreate({
             username: credentials.username,
             password: credentials.password
           } as any)
 
+          console.log('[NextAuth] Token received successfully, user_id:', decodeToken(res.access).user_id)
           return {
             id: decodeToken(res.access).user_id,
             username: credentials.username,
@@ -88,9 +95,16 @@ const authOptions: AuthOptions = {
             refresh: res.refresh
           }
         } catch (error) {
+          console.error('[NextAuth] Error during authentication:', error)
           if (error instanceof ApiError) {
+            console.error('[NextAuth] ApiError details:', {
+              status: error.status,
+              statusText: error.statusText,
+              body: error.body
+            })
             return null
           }
+          throw error
         }
 
         return null
