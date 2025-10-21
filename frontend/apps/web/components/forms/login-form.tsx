@@ -37,7 +37,7 @@ export function LoginForm() {
       />
 
       {search.has('error') && search.get('error') === 'CredentialsSignin' && (
-        <ErrorMessage>Provided account does not exists.</ErrorMessage>
+        <ErrorMessage>Provided account does not exist.</ErrorMessage>
       )}
 
       <form
