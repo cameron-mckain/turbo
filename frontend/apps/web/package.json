@@ -15,6 +15,7 @@
     "next": "15.5.6",
     "next-auth": "^4.24.11",
     "react-hook-form": "^7.54.2",
+    "tailwindcss": "^4.1.15",
     "zod": "^3.24.1"
   },
   "devDependencies": {
