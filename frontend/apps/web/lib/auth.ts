@@ -50,9 +50,8 @@ const authOptions: AuthOptions = {
       if (Date.now() / 1000 > decodeToken(token.access).exp) {
         const apiClient = await getApiClient()
         const res = await apiClient.token.tokenRefreshCreate({
-          access: token.access,
           refresh: token.refresh
-        })
+        } as any)
 
         token.access = res.access
       }
@@ -79,10 +78,8 @@ const authOptions: AuthOptions = {
           const apiClient = await getApiClient()
           const res = await apiClient.token.tokenCreate({
             username: credentials.username,
-            password: credentials.password,
-            access: '',
-            refresh: ''
-          })
+            password: credentials.password
+          } as any)
 
           return {
             id: decodeToken(res.access).user_id,
