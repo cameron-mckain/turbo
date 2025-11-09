@@ -11,4 +11,4 @@ echo "Collecting static files..."
 python manage.py collectstatic --noinput
 
 echo "Starting Granian..."
-exec python -m granian --interface wsgi api.wsgi:application --host 0.0.0.0 --port 8000 --workers 4
+exec python -m granian --interface asgi api.asgi:application --host 0.0.0.0 --port 8000 --workers 4
