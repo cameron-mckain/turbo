@@ -5,6 +5,11 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: arc-runner-set
+    container:
+      image: containers.github.projectunity.io/mckain/granian-python314t:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     services:
       postgres:
         image: postgres
@@ -18,17 +23,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.13'
-
       - name: Install Uv
-        run: pip install uv
+        run: python3.14t -m pip install uv
 
       - name: Run tests
         env:
-          DATABASE_HOST: localhost
+          DATABASE_HOST: postgres
           DATABASE_USER: postgres
           DATABASE_PASSWORD: postgres
           DATABASE_NAME: postgres
