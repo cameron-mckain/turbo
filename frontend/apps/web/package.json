@@ -13,11 +13,13 @@
     "@frontend/ui": "workspace:^",
     "@babel/runtime": "^7.26.10",
     "@hookform/resolvers": "^3.9.1",
-    "next": "15.5.6",
+    "next": "16.0.1",
     "next-auth": "^4.24.12",
     "react-hook-form": "^7.54.2",
     "tailwindcss": "^4.1.15",
-    "zod": "^3.24.1"
+    "zod": "^3.24.1",
+    "react": "19.2.0",
+    "react-dom": "19.2.0"
   },
   "devDependencies": {
     "typescript": "5.7.2"
