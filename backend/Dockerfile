@@ -14,6 +14,12 @@ RUN python3.14t -m pip install uv && \
     uv venv && \
     uv sync
 
+# Copy and install custom wheels
+COPY wheels/*.whl /tmp/wheels/
+RUN . /.venv/bin/activate && \
+    pip install /tmp/wheels/*.whl && \
+    rm -rf /tmp/wheels
+
 # Copy application code
 COPY api ./api
 COPY manage.py ./
