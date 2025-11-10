@@ -16,8 +16,7 @@ RUN python3.14t -m pip install uv && \
 
 # Copy and install custom wheels
 COPY wheels/*.whl /tmp/wheels/
-RUN . /.venv/bin/activate && \
-    pip install /tmp/wheels/*.whl && \
+RUN uv pip install /tmp/wheels/*.whl && \
     rm -rf /tmp/wheels
 
 # Copy application code
