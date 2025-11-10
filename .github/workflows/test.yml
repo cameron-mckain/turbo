@@ -21,7 +21,7 @@ jobs:
           POSTGRES_PASSWORD: postgres
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install Uv
         run: python3.14t -m pip install uv
