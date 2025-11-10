@@ -11,9 +11,10 @@
   "dependencies": {
     "@frontend/types": "workspace:^",
     "@frontend/ui": "workspace:^",
+    "@babel/runtime": "^7.26.10",
     "@hookform/resolvers": "^3.9.1",
     "next": "15.5.6",
-    "next-auth": "^4.24.11",
+    "next-auth": "^4.24.12",
     "react-hook-form": "^7.54.2",
     "tailwindcss": "^4.1.15",
     "zod": "^3.24.1"
