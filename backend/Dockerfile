@@ -1,4 +1,4 @@
-FROM ghcr.io/cameron-mckain/granian255-python314t:latest
+FROM containers.github.projectunity.io/mckain/granian-python314t:latest
 
 ENV PYTHONUNBUFFERED=1
 ENV UV_PROJECT_ENVIRONMENT=/.venv
