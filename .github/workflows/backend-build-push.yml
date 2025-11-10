@@ -9,8 +9,10 @@ on:
       - '.github/workflows/backend-build-push.yml'
 
 env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: cameron-mckain/turbo-backend
+  GHCR_REGISTRY: ghcr.io
+  GHES_REGISTRY: containers.github.projectunity.io
+  GHCR_IMAGE: cameron-mckain/turbo-backend
+  GHES_IMAGE: mckain/turbo-backend
 
 jobs:
   build-and-push:
@@ -23,18 +25,27 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Log in to GitHub Container Registry
+      - name: Log in to GitHub.com Container Registry
         uses: docker/login-action@v3
         with:
-          registry: ${{ env.REGISTRY }}
+          registry: ${{ env.GHCR_REGISTRY }}
           username: cameron-mckain
           password: ${{ secrets.GHCR_PAT }}
+
+      - name: Log in to GHES Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.GHES_REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Extract metadata for Docker
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: |
+            ${{ env.GHCR_REGISTRY }}/${{ env.GHCR_IMAGE }}
+            ${{ env.GHES_REGISTRY }}/${{ env.GHES_IMAGE }}
           tags: |
             type=raw,value=latest
             type=sha,prefix={{branch}}-
