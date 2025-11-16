@@ -21,6 +21,17 @@ const authOptions: AuthOptions = {
     signIn: '/login'
   },
   callbacks: {
+    async signIn({ user, account }) {
+      // Allow certificate-based sign in
+      if (account?.provider === 'certificate') {
+        return true
+      }
+      // Allow credentials sign in
+      if (account?.provider === 'credentials') {
+        return true
+      }
+      return false
+    },
     session: async ({ session, token }) => {
       const access = decodeToken(token.access)
       const refresh = decodeToken(token.refresh)
@@ -61,6 +72,50 @@ const authOptions: AuthOptions = {
     }
   },
   providers: [
+    // Certificate-based authentication (mTLS)
+    CredentialsProvider({
+      id: 'certificate',
+      name: 'Client Certificate',
+      credentials: {},
+      async authorize(credentials, req) {
+        // Check if certificate was verified by NGINX
+        const certVerify = req.headers?.['x-ssl-client-verify']
+        const certDN = req.headers?.['x-ssl-client-s-dn']
+
+        if (certVerify !== 'SUCCESS' || !certDN) {
+          return null
+        }
+
+        try {
+          // Call Django endpoint to get JWT tokens for cert-authenticated user
+          const apiClient = await getApiClient()
+          const res = await fetch(`${process.env.API_URL}/api/token/certificate/`, {
+            method: 'POST',
+            headers: {
+              'Cookie': req.headers?.cookie || '',
+            },
+            credentials: 'include',
+          })
+
+          if (!res.ok) {
+            return null
+          }
+
+          const data = await res.json()
+
+          return {
+            id: decodeToken(data.access).user_id,
+            username: 'cert-user', // Will be replaced by actual username from token
+            access: data.access,
+            refresh: data.refresh,
+          }
+        } catch (error) {
+          console.error('Certificate auth error:', error)
+          return null
+        }
+      }
+    }),
+    // Username/password authentication
     CredentialsProvider({
       name: 'credentials',
       credentials: {
