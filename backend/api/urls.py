@@ -5,6 +5,7 @@ from rest_framework import routers
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from .api import UserViewSet
+from .debug_views import ssl_headers_debug
 
 router = routers.DefaultRouter()
 router.register("users", UserViewSet, basename="api-users")
@@ -18,5 +19,6 @@ urlpatterns = [
     path("api/", include(router.urls)),
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("debug/ssl-headers/", ssl_headers_debug, name="ssl_headers_debug"),
     path("admin/", admin.site.urls),
 ]
