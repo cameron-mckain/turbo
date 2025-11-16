@@ -127,6 +127,11 @@ SESSION_CACHE_ALIAS = "default"
 ######################################################################
 AUTH_USER_MODEL = "api.User"
 
+AUTHENTICATION_BACKENDS = [
+    "api.auth_backends.ClientCertificateBackend",  # Try client certificate first
+    "django.contrib.auth.backends.ModelBackend",    # Fallback to username/password
+]
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
