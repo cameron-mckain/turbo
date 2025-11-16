@@ -1,4 +1,5 @@
 import { AuthProvider } from '@/providers/auth-provider'
+import { CertificateAutoLogin } from '@/components/certificate-auto-login'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { twMerge } from 'tailwind-merge'
@@ -23,6 +24,7 @@ export default function RootLayout({
         )}
       >
         <AuthProvider>
+          <CertificateAutoLogin />
           <div className="px-6">
             <div className="container mx-auto my-12 max-w-6xl">{children}</div>
           </div>
