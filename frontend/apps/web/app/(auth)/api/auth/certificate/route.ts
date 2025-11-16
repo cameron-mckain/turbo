@@ -60,12 +60,14 @@ export async function GET(request: NextRequest) {
 
     const data = await res.json()
     console.log('[CertRoute] Successfully got tokens from Django')
+    console.log('[CertRoute] Username:', data.username)
 
-    // Return tokens for client-side session creation
+    // Return tokens and username for client-side session creation
     return NextResponse.json({
       authenticated: true,
       access: data.access,
       refresh: data.refresh,
+      username: data.username,
     })
   } catch (error) {
     console.error('[CertRoute] Certificate auth error:', error)
