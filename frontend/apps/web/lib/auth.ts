@@ -61,8 +61,40 @@ const authOptions: AuthOptions = {
     }
   },
   providers: [
+    // Certificate-based authentication (mTLS from Intune)
+    CredentialsProvider({
+      id: 'certificate',
+      name: 'Certificate',
+      credentials: {
+        access: { label: 'Access Token', type: 'text' },
+        refresh: { label: 'Refresh Token', type: 'text' },
+        username: { label: 'Username', type: 'text' }
+      },
+      async authorize(credentials) {
+        if (!credentials?.access || !credentials?.refresh || !credentials?.username) {
+          return null
+        }
+
+        // Tokens are already validated by /api/auth/certificate endpoint
+        // Just decode and return the user info
+        try {
+          const access = decodeToken(credentials.access)
+
+          return {
+            id: access.user_id,
+            username: credentials.username,
+            access: credentials.access,
+            refresh: credentials.refresh
+          }
+        } catch (error) {
+          console.error('Failed to decode certificate tokens:', error)
+          return null
+        }
+      }
+    }),
     // Username/password authentication
     CredentialsProvider({
+      id: 'credentials',
       name: 'credentials',
       credentials: {
         username: {

@@ -58,4 +58,5 @@ def certificate_token(request):
     return Response({
         "access": str(refresh.access_token),
         "refresh": str(refresh),
+        "username": request.user.username,
     })

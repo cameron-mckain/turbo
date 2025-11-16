@@ -3,6 +3,11 @@
 import { useSession, signIn } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 
+// Decode JWT to extract username
+function decodeToken(token: string): { user_id: number } {
+  return JSON.parse(atob(token.split('.')[1]))
+}
+
 export function CertificateAutoLogin() {
   const { data: session, status } = useSession()
   const [checking, setChecking] = useState(false)
@@ -25,12 +30,17 @@ export function CertificateAutoLogin() {
         const data = await res.json()
 
         if (data.authenticated && data.access && data.refresh) {
-          // We have JWT tokens from Django - sign in to next-auth
-          await signIn('credentials', {
-            username: 'certificate-user',
-            password: data.access, // Pass access token as password
+          // Sign in using the certificate provider with the tokens and username
+          const result = await signIn('certificate', {
+            access: data.access,
+            refresh: data.refresh,
+            username: data.username, // Username from Django response
             redirect: false,
           })
+
+          if (result?.error) {
+            console.error('Certificate sign-in failed:', result.error)
+          }
         }
       }
     } catch (error) {
