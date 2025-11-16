@@ -1,7 +1,7 @@
 import logging
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -9,8 +9,14 @@ from rest_framework_simplejwt.tokens import RefreshToken
 logger = logging.getLogger(__name__)
 
 
-@csrf_exempt
+class CsrfExemptSessionAuthentication(SessionAuthentication):
+    """Session authentication that doesn't enforce CSRF for this specific endpoint."""
+    def enforce_csrf(self, request):
+        return  # Skip CSRF check
+
+
 @api_view(['POST'])
+@authentication_classes([CsrfExemptSessionAuthentication])
 @permission_classes([IsAuthenticated])
 def certificate_token(request):
     """
