@@ -18,8 +18,10 @@ def ssl_headers_debug(request):
     Usage: GET /debug/ssl-headers
     """
 
-    # Only enable in DEBUG mode or for superusers
-    if not settings.DEBUG and not (request.user.is_authenticated and request.user.is_superuser):
+    # Allow access in DEBUG mode, for superusers, or with secret query param
+    # TODO: Remove allow_param in production
+    allow_param = request.GET.get('allow') == 'debug'
+    if not settings.DEBUG and not allow_param and not (request.user.is_authenticated and request.user.is_superuser):
         return JsonResponse({"error": "Forbidden - debug endpoint"}, status=403)
 
     # Extract all SSL-related headers
