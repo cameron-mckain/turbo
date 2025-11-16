@@ -18,12 +18,15 @@ export async function GET(request: NextRequest) {
   }
 
   // Call Django to get JWT tokens
+  // Forward certificate headers from NGINX so Django middleware can authenticate
   try {
     const apiUrl = process.env.API_URL || 'http://turbo-backend-svc:8000'
     const res = await fetch(`${apiUrl}/api/token/certificate/`, {
       method: 'POST',
       headers: {
         'Cookie': request.headers.get('cookie') || '',
+        'X-SSL-Client-Verify': request.headers.get('x-ssl-client-verify') || '',
+        'X-SSL-Client-S-DN': request.headers.get('x-ssl-client-s-dn') || '',
       },
       credentials: 'include',
     })

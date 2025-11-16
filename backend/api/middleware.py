@@ -21,14 +21,17 @@ class AutoCertificateLoginMiddleware:
         # Only attempt cert login if:
         # 1. User is not already authenticated
         # 2. Certificate was verified successfully
-        # 3. This is not a login/logout endpoint (avoid redirect loops)
+        # 3. This is not a username/password login endpoint (avoid issues)
 
         if not request.user.is_authenticated:
             cert_verify = request.META.get('HTTP_X_SSL_CLIENT_VERIFY', 'NONE')
 
             if cert_verify == 'SUCCESS':
-                # Don't interfere with explicit login/logout pages
-                if not request.path.startswith('/api/token/'):
+                # Skip only the username/password token endpoints
+                # Allow /api/token/certificate/ to use cert auth
+                excluded_paths = ['/api/token/', '/api/token/refresh/']
+
+                if request.path not in excluded_paths:
                     # Authenticate via certificate
                     user = authenticate(request=request)
 
