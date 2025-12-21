@@ -39,6 +39,10 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Generate timestamp
+        id: timestamp
+        run: echo "ts=$(date +%s)" >> $GITHUB_OUTPUT
+
       - name: Extract metadata for Docker
         id: meta
         uses: docker/metadata-action@v5
@@ -47,8 +51,7 @@ jobs:
             ${{ env.GHCR_REGISTRY }}/${{ env.GHCR_IMAGE }}
             ${{ env.GHES_REGISTRY }}/${{ env.GHES_IMAGE }}
           tags: |
-            type=raw,value=latest
-            type=raw,value={{branch}}-{{sha}}-{{date 'X'}}
+            type=raw,value=main-{{sha}}-${{ steps.timestamp.outputs.ts }},enable={{is_default_branch}}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
